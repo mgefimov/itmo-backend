@@ -1,41 +1,21 @@
-from ...main import app
-from fastapi.testclient import TestClient
-
-client = TestClient(app)
+from ...items import read_item, DiscountItem
 
 
-def test_read_main():
-    response = client.get('/')
-    assert response.status_code == 200
-    assert response.json() == {'Hello': 'World'}
+def test_apply_discount():
+    item = read_item(123)
+    discount_item = DiscountItem(**item.dict(), username='test')
+    assert discount_item.is_valid()
+    discount_item.apply_discount()
+    assert discount_item.price == 80.0
 
 
-def test_get_item():
-    response = client.get('/items/123')
-    assert response.status_code == 200
-    assert response.json()['name'] == 'item 123'
-    assert response.json()['price'] == 100.0
+def test_read_unknown_item():
+    item = read_item(666)
+    assert item is None
 
 
-def test_get_discount():
-    response = client.post('/get_discount/',
-                           json={
-                               'username': 'test name',
-                               'item_name': 'test item',
-                               'price': -123
-                           })
-    assert response.status_code == 412
-    assert response.json()['success'] is False
-
-    response = client.post('/get_discount/',
-                           json={
-                               'username': 'test name',
-                               'item_name': 'test item',
-                               'price': 100
-                           })
-    assert response.status_code == 200
-    json = response.json()
-    data = json['data']
-    assert json['success'] is True
-    assert data['price'] == 80.0
-    assert data['item_name'].endswith('(Скидка)')
+def test_invalid_item():
+    item = read_item(124)
+    item.price -= 1000
+    discount_item = DiscountItem(**item.dict(), username='test')
+    assert discount_item.is_valid() is False
