@@ -1,5 +1,8 @@
-from ...main import app
+import sys
+sys.path.append('.')
+from ...main import app, schema
 from fastapi.testclient import TestClient
+from graphene.test import Client
 
 client = TestClient(app)
 
@@ -39,3 +42,31 @@ def test_get_discount():
     assert json['success'] is True
     assert data['price'] == 80.0
     assert data['name'].endswith('(Скидка)')
+
+
+def test_graphql():
+    client = Client(schema)
+    executed = client.execute('''{
+  person(uid:"123"){
+    firstName
+    pet {
+      name
+      age
+    }
+  }
+}''')
+    data = executed['data']
+    assert data['person']['firstName'] == 'Max'
+    assert data['person']['pet']['age'] == 3
+
+
+def test_graphql_no_pet():
+    client = Client(schema)
+    executed = client.execute('''{
+  person(uid:"124"){
+    firstName
+  }
+}''')
+    data = executed['data']
+    assert data['person']['firstName'] == 'Ivan'
+    assert 'pet' not in data['person']
