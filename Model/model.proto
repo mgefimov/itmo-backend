@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package model;
+
+service Model {
+  rpc Run(Request) returns (Response) {}
+}
+
+message Request {
+  string file_url = 1;
+}
+
+message Row {
+  repeated float rotation = 1;
+  repeated float transformation = 2;
+}
+
+message Response {
+  repeated Row row = 1;
+}
