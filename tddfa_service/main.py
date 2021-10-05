@@ -116,19 +116,19 @@ def serve():
 
 
 if __name__ == '__main__':
-    # logging.basicConfig()
-    # serve()
-    files = ['test01', 'test02', 'test03', 'test04', 'test05', 'test06', 'test07', 'test08', 'test09', 'test10',
-             'test11', 'test12', 'test13']
-    for file_name in files:
-        matrices = process_video(f'./resources/{file_name}.mp4')
-        res = '['
-        sep = ''
-        for matrix in matrices:
-            reshaped = np.array(matrix).reshape(4, 4)
-            rotv = cv2.Rodrigues(reshaped[:3, :3])[0]
-            res += f'{sep}{{ "rotation": [{rotv.T[0][0]},{rotv.T[0][1]},{rotv.T[0][2]}], "transformation": {matrix}}}'
-            sep = ',\n'
-        res += ']'
-        with open(f'./output/{file_name}.json', 'w') as f:
-            f.write(res)
+    logging.basicConfig()
+    serve()
+    # files = ['test01', 'test02', 'test03', 'test04', 'test05', 'test06', 'test07', 'test08', 'test09', 'test10',
+    #          'test11', 'test12', 'test13']
+    # for file_name in files:
+    #     matrices = process_video(f'./resources/{file_name}.mp4')
+    #     res = '['
+    #     sep = ''
+    #     for matrix in matrices:
+    #         reshaped = np.array(matrix).reshape(4, 4)
+    #         rotv = cv2.Rodrigues(reshaped[:3, :3])[0]
+    #         res += f'{sep}{{ "rotation": [{rotv.T[0][0]},{rotv.T[0][1]},{rotv.T[0][2]}], "transformation": {matrix}}}'
+    #         sep = ',\n'
+    #     res += ']'
+    #     with open(f'./output/{file_name}.json', 'w') as f:
+    #         f.write(res)
