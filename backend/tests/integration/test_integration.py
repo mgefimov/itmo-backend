@@ -4,6 +4,9 @@ from ...items import read_item, Item
 from ...proto import model_pb2, model_pb2_grpc
 import grpc
 from concurrent import futures
+import configparser
+config = configparser.ConfigParser()
+config.read('./config.ini')
 
 
 def test_apply_discount():
@@ -38,11 +41,11 @@ def test_tddfa_service():
     def serve():
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         model_pb2_grpc.add_ModelServicer_to_server(Server(), server)
-        server.add_insecure_port('[::]:50052')
+        server.add_insecure_port(f'[::]:{config["tddfa"]["port"]}')
         server.start()
 
     serve()
-    with grpc.insecure_channel('localhost:50052') as channel:
+    with grpc.insecure_channel(f'{config["tddfa"]["host"]}:{config["tddfa"]["port"]}') as channel:
         stub = model_pb2_grpc.ModelStub(channel)
         response = stub.Run(model_pb2.Request(file_url='test_file'))
         assert response.row[0].rotation[1] == 2

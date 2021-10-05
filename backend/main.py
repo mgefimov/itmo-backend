@@ -8,6 +8,9 @@ from starlette.graphql import GraphQLApp
 import grpc
 from proto import model_pb2, model_pb2_grpc
 from google.protobuf.json_format import MessageToDict
+import configparser
+config = configparser.ConfigParser()
+config.read('./config.ini')
 
 app = FastAPI()
 
@@ -33,7 +36,7 @@ def get_discount(item: Item, response: Response):
 
 @app.get('/process_video/')
 def process_video(file_url: str):
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel(f'{config["tddfa"]["host"]}:{config["tddfa"]["port"]}') as channel:
         stub = model_pb2_grpc.ModelStub(channel)
         response = stub.Run(model_pb2.Request(file_url=file_url))
     return MessageToDict(response)

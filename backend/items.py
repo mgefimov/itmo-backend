@@ -1,12 +1,10 @@
 from pydantic import BaseModel
 import psycopg2
+import configparser
+config = configparser.ConfigParser()
+config.read('./config.ini')
 
-conn = psycopg2.connect(
-    user='itmouser',
-    dbname='itmodb',
-    password='pgpwd4itmo',
-    host='localhost',
-)
+conn = psycopg2.connect(**config['postgres'])
 
 
 class Item(BaseModel):
