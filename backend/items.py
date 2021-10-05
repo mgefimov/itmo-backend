@@ -1,22 +1,15 @@
 from pydantic import BaseModel
+import psycopg2
+import configparser
+config = configparser.ConfigParser()
+config.read('./config.ini')
+
+conn = psycopg2.connect(**config['postgres'])
 
 
 class Item(BaseModel):
     name: str
     price: float
-
-
-items = {
-    123: Item(name=f'item 123', price=100.0),
-    124: Item(name=f'item 124', price=200.0),
-    125: Item(name=f'item 124', price=350.0),
-}
-
-
-class DiscountItem(BaseModel):
-    username: str
-    price: float
-    name: str
 
     def apply_discount(self):
         self.price *= 0.8
@@ -27,6 +20,9 @@ class DiscountItem(BaseModel):
 
 
 def read_item(item_id: int):
-    if item_id in items:
-        return items[item_id]
+    cursor = conn.cursor()
+    cursor.execute('select * from items where id=%s', (item_id,))
+    res = cursor.fetchone()
+    if res is not None:
+        return Item(name=res[1], price=float(res[2][1:]))
     return None

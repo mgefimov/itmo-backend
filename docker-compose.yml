@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "itmodb"
+      POSTGRES_USER: "itmouser"
+      POSTGRES_PASSWORD: "pgpwd4itmo"
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
