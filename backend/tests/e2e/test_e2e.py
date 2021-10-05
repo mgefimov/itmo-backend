@@ -14,7 +14,7 @@ def test_read_main():
 
 
 def test_get_item():
-    response = client.get('/items/123')
+    response = client.get('/items/1')
     assert response.status_code == 200
     assert response.json()['name'] == 'item 123'
     assert response.json()['price'] == 100.0

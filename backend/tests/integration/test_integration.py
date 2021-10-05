@@ -1,14 +1,14 @@
 import sys
 sys.path.append('.')
-from ...items import read_item, DiscountItem
+from ...items import read_item, Item
 from ...proto import model_pb2, model_pb2_grpc
 import grpc
 from concurrent import futures
 
 
 def test_apply_discount():
-    item = read_item(123)
-    discount_item = DiscountItem(**item.dict(), username='test')
+    item = read_item(1)
+    discount_item = Item(**item.dict())
     assert discount_item.is_valid()
     discount_item.apply_discount()
     assert discount_item.price == 80.0
@@ -20,9 +20,9 @@ def test_read_unknown_item():
 
 
 def test_invalid_item():
-    item = read_item(124)
+    item = read_item(2)
     item.price -= 1000
-    discount_item = DiscountItem(**item.dict(), username='test')
+    discount_item = Item(**item.dict())
     assert discount_item.is_valid() is False
 
 
