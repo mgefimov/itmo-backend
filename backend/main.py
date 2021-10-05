@@ -1,10 +1,11 @@
+import sys
+sys.path.append('./proto')
 from fastapi import FastAPI, Response, status
 from items import Item, DiscountItem, read_item
 from graphene import ObjectType, String, Schema, Int, Field
 from starlette.graphql import GraphQLApp
 import grpc
-import model_pb2
-import model_pb2_grpc
+from proto import model_pb2, model_pb2_grpc
 from google.protobuf.json_format import MessageToDict
 
 app = FastAPI()
