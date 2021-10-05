@@ -1,7 +1,7 @@
 import sys
 sys.path.append('.')
 from ...items import read_item, DiscountItem
-from ... import model_pb2, model_pb2_grpc
+from ...proto import model_pb2, model_pb2_grpc
 import grpc
 from concurrent import futures
 
@@ -26,7 +26,7 @@ def test_invalid_item():
     assert discount_item.is_valid() is False
 
 
-def test_grpc():
+def test_tddfa_service():
     class Server(model_pb2_grpc.ModelServicer):
         def Run(self, request, context):
             response = model_pb2.Response()
